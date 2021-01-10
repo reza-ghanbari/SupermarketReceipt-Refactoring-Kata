@@ -7,7 +7,7 @@ public class ReceiptItem {
     private final double price;
     private final double quantity;
 
-    ReceiptItem(Product p, double quantity, double price) {
+    public ReceiptItem(Product p, double quantity, double price) {
         this.product = p;
         this.quantity = quantity;
         this.price = price;

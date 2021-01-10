@@ -6,8 +6,19 @@ public class Offer {
     private final double argument;
     private String description;
 
+    public Offer(SpecialOfferType offerType, Product product, double argument) {
+        this.offerType = offerType;
+        this.argument = argument;
+        this.product = product;
+        setOfferDescription();
+    }
+
     public SpecialOfferType getOfferType() {
         return offerType;
+    }
+
+    public Product getProduct() {
+        return this.product;
     }
 
     public double getArgument() {
@@ -18,14 +29,7 @@ public class Offer {
         return description;
     }
 
-    public Offer(SpecialOfferType offerType, Product product, double argument) {
-        this.offerType = offerType;
-        this.argument = argument;
-        this.product = product;
-        setOfferDescription();
-    }
-
-    void setOfferDescription() {
+    private void setOfferDescription() {
         switch (offerType) {
             case ThreeForTwo:
                 description = "3 for 2";
@@ -40,10 +44,6 @@ public class Offer {
                 description = "5 for " + argument;
                 break;
         }
-    }
-
-    Product getProduct() {
-        return this.product;
     }
 
 }
