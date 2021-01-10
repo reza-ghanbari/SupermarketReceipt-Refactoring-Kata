@@ -33,40 +33,40 @@ public class ShoppingCart {
         }
     }
 
-    double calculateDiscountForAmounts(double quantity, double unitPrice, double amount, int FreeItemsPerAmount) {
+    private double calculateDiscountForAmounts(double quantity, double unitPrice, double amount, int FreeItemsPerAmount) {
         int roundedQuantity = (int) quantity;
         double numberOfPaidItems = amount * (roundedQuantity / FreeItemsPerAmount) + roundedQuantity % FreeItemsPerAmount;
         return unitPrice * (quantity - numberOfPaidItems);
     }
 
-    void handleOffers(Receipt receipt, Map<Product, Offer> offers, SupermarketCatalog catalog) {
-        for (Product p: productQuantities().keySet()) {
-            double quantity = productQuantities.get(p);
-            if (offers.containsKey(p)) {
-                Offer offer = offers.get(p);
-                double unitPrice = catalog.getUnitPrice(p);
-                int quantityAsInt = (int) quantity;
-                Discount discount = null;
-                double discountAmount = 0;
-                if (offer.getOfferType() == SpecialOfferType.TwoForAmount && quantityAsInt >= 2) {
-                    discountAmount = calculateDiscountForAmounts(quantity, unitPrice, offer.getArgument(), 2);
-                    discount = new Discount(p, offer.getDescription(), discountAmount);
-                }
-                if (offer.getOfferType() == SpecialOfferType.ThreeForTwo && quantityAsInt >= 3) {
-                    discountAmount = calculateDiscountForAmounts(quantity, unitPrice, 2, 3);
-                    discount = new Discount(p, offer.getDescription(), discountAmount);
-                }
-                if (offer.getOfferType() == SpecialOfferType.FiveForAmount && quantityAsInt >= 5) {
-                    discountAmount = calculateDiscountForAmounts(quantity, unitPrice, offer.getArgument(), 5);
-                    discount = new Discount(p, offer.getDescription(), discountAmount);
-                }
-                if (offer.getOfferType() == SpecialOfferType.TenPercentDiscount) {
-                    discount = new Discount(p, offer.getDescription(), quantity * unitPrice * offer.getArgument() / 100.0);
-                }
-                if (discount != null)
-                    receipt.addDiscount(discount);
+    public void handleOffers(Receipt receipt, Map<Product, Offer> offers, SupermarketCatalog catalog) {
+        for (Product product : productQuantities.keySet()) {
+            if (offers.containsKey(product)) {
+                Offer offer = offers.get(product);
+                double discountAmount = getDiscountAmount(productQuantities.get(product), offer, catalog.getUnitPrice(product));
+                if (discountAmount != 0)
+                    receipt.addDiscount(new Discount(product, offer.getDescription(), discountAmount));
             }
 
         }
+    }
+
+    private double getDiscountAmount(double quantity, Offer offer, double unitPrice) {
+        double discountAmount = 0;
+        switch (offer.getOfferType()) {
+            case TwoForAmount:
+                discountAmount = calculateDiscountForAmounts(quantity, unitPrice, offer.getArgument(), 2);
+                break;
+            case ThreeForTwo:
+                discountAmount = calculateDiscountForAmounts(quantity, unitPrice, 2, 3);
+                break;
+            case FiveForAmount:
+                discountAmount = calculateDiscountForAmounts(quantity, unitPrice, offer.getArgument(), 5);
+                break;
+            case TenPercentDiscount:
+                discountAmount = quantity * unitPrice * offer.getArgument() / 100.0;
+                break;
+        }
+        return discountAmount;
     }
 }
