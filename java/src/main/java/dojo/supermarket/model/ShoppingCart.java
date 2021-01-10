@@ -42,15 +42,15 @@ public class ShoppingCart {
                 int quantityAsInt = (int) quantity;
                 Discount discount = null;
                 if (offer.offerType == SpecialOfferType.TwoForAmount && quantityAsInt >= 2) {
-                    double discountAmount = unitPrice * quantity - offer.argument * (quantityAsInt / 2.0) + quantityAsInt % 2 * unitPrice;
+                    double discountAmount = unitPrice * quantity - offer.argument * unitPrice * (quantityAsInt / 2) + quantityAsInt % 2 * unitPrice;
                     discount = new Discount(p, "2 for " + offer.argument, -discountAmount);
                 }
                 if (offer.offerType == SpecialOfferType.ThreeForTwo && quantityAsInt >= 3) {
-                    double discountAmount = quantity * unitPrice - (((quantityAsInt / 3.0) * 2 * unitPrice) + quantityAsInt % 3 * unitPrice);
+                    double discountAmount = quantity * unitPrice - (((quantityAsInt / 3) * 2 * unitPrice) + quantityAsInt % 3 * unitPrice);
                     discount = new Discount(p, "3 for 2", -discountAmount);
                 }
                 if (offer.offerType == SpecialOfferType.FiveForAmount && quantityAsInt >= 5) {
-                    double discountTotal = unitPrice * quantity - (offer.argument * (quantityAsInt / 5.0) + quantityAsInt % 5 * unitPrice);
+                    double discountTotal = unitPrice * quantity - (offer.argument * unitPrice * (quantityAsInt / 5) + quantityAsInt % 5 * unitPrice);
                     discount = new Discount(p, 5 + " for " + offer.argument, -discountTotal);
                 }
                 if (offer.offerType == SpecialOfferType.TenPercentDiscount) {
