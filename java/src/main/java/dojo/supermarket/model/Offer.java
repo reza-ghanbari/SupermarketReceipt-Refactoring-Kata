@@ -17,8 +17,8 @@ public class Offer {
         setOfferDescription();
     }
 
-    public Offer(SpecialOfferType offerType, HashMap<Product, Double> bundleList) {
-        this.offerType = offerType;
+    public Offer(HashMap<Product, Double> bundleList) {
+        this.offerType = SpecialOfferType.Bundle;
         this.product = null;
         this.amount = 0;
         this.bundleList = bundleList;

@@ -18,6 +18,11 @@ public class Teller {
         this.offers.put(product, new Offer(offerType, product, argument));
     }
 
+    public void addBundleOffer(HashMap<Product, Double> bundleList) {
+        Product dummyProduct = new Product("Bundle", ProductUnit.Each);
+        this.offers.put(dummyProduct, new Offer(bundleList));
+    }
+
     public Receipt checksOutArticlesFrom(ShoppingCart theCart) {
         Receipt receipt = new Receipt();
         List<ProductQuantity> productQuantities = theCart.getItems();
@@ -31,5 +36,4 @@ public class Teller {
 
         return receipt;
     }
-
 }

@@ -39,10 +39,17 @@ public class ShoppingCart {
         for (Product p: getProductQuantities().keySet()) {
             if (offers.containsKey(p)) {
                 Offer offer = offers.get(p);
-                double discountAmount = getDiscountAmount(productQuantities.get(p), offer, catalog.getUnitPrice(p), catalog);
+                double discountAmount = getDiscountAmount(productQuantities.get(p), offer, catalog.getUnitPrice(p));
                 if (discountAmount != 0)
                     receipt.addDiscount(new Discount(p, offer.getDescription(), -discountAmount));
             }
+        }
+        Product dummyProduct = new Product("Bundle", ProductUnit.Each);
+        if (offers.containsKey(dummyProduct)) {
+            Offer offer = offers.get(dummyProduct);
+            double discountAmount = getBundleDiscount(offer.getBundleList(), catalog);
+            if (discountAmount != 0)
+                receipt.addDiscount(new Discount(dummyProduct, offer.getDescription(), -discountAmount));
         }
     }
 
@@ -58,7 +65,7 @@ public class ShoppingCart {
         return numberInclude * (0.1) * totolPrice;
     }
 
-    private double getDiscountAmount(double quantity, Offer offer, double unitPrice, SupermarketCatalog catalog) {
+    private double getDiscountAmount(double quantity, Offer offer, double unitPrice) {
         double discountAmount = 0;
         switch (offer.getOfferType()) {
             case TwoForAmount:
@@ -72,9 +79,6 @@ public class ShoppingCart {
                 break;
             case FiveForAmount:
                 discountAmount = calculateDiscountForAmounts(quantity, unitPrice, offer.getAmount(), 5);
-                break;
-            case Bundle:
-                discountAmount = getBundleDiscount(offer.getBundleList(), catalog);
                 break;
         }
         return discountAmount;
